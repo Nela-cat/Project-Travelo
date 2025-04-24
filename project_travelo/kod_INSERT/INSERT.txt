@@ -1,0 +1,375 @@
+-- Wyłączenie tymczasowe bezpiecznego trybu, jeśli nadal aktywny
+SET SQL_SAFE_UPDATES = 0;
+
+-- 1. Wypełnianie tabel nadrzędnych (bez zależności)
+
+-- kraj
+DELETE FROM `kraj`;
+ALTER TABLE `kraj` AUTO_INCREMENT = 1;
+INSERT INTO `kraj` (`nazwa`) VALUES
+('Polska'),
+('Niemcy'),
+('Francja'),
+('Włochy'),
+('Hiszpania'),
+('Polska');
+
+-- partner
+DELETE FROM `partner`;
+ALTER TABLE `partner` AUTO_INCREMENT = 1;
+INSERT INTO `partner` (`nazwa_firmy`, `email`, `telefon`, `nip`, `utworzono_w`) VALUES
+('Wawel Tours', 'wawel@example.com', '123456789', '1234567890', '2025-04-24 10:00:00'),
+('Berlin Adventures', 'berlin@example.com', '987654321', '0987654321', '2025-04-24 10:00:00'),
+('Seine Cruises', 'seine@example.com', '456789123', '4567891234', '2025-04-24 10:00:00'),
+('Colosseum Guides', 'colosseum@example.com', '321654987', '3216549876', '2025-04-24 10:00:00'),
+('Sagrada Tours', 'sagrada@example.com', '654987321', '6549873210', '2025-04-24 10:00:00'),
+('Warsaw Museums', 'warsaw@example.com', '789123456', '7891234560', '2025-04-24 10:00:00');
+
+-- klient
+DELETE FROM `klient`;
+ALTER TABLE `klient` AUTO_INCREMENT = 1;
+INSERT INTO `klient` (`imię`, `nazwisko`, `email`, `telefon`, `data_rejestracji`, `punkty_lojalnościowe`) VALUES
+('Jan', 'Kowalski', 'jan@example.com', '111222333', '2025-04-24 10:00:00', 50),
+('Anna', 'Schmidt', 'anna@example.com', '444555666', '2025-04-24 10:00:00', 20),
+('Marie', 'Dupont', 'marie@example.com', '777888999', '2025-04-24 10:00:00', 100),
+('Luigi', 'Rossi', 'luigi@example.com', '222333444', '2025-04-24 10:00:00', 30),
+('Sofia', 'Gomez', 'sofia@example.com', '555666777', '2025-04-24 10:00:00', 60),
+('Katarzyna', 'Nowak', 'katarzyna@example.com', '888999000', '2025-04-24 10:00:00', 10);
+
+-- administrator
+DELETE FROM `administrator`;
+ALTER TABLE `administrator` AUTO_INCREMENT = 1;
+INSERT INTO `administrator` (`imię`, `nazwisko`, `email`, `rola`) VALUES
+('Adam', 'Admin', 'adam@example.com', 'superadmin'),
+('Ewa', 'Support', 'ewa@example.com', 'support'),
+('Tomasz', 'Manager', 'tomasz@example.com', 'manager'),
+('Klara', 'Agent', 'klara@example.com', 'agent'),
+('Piotr', 'Supervisor', 'piotr@example.com', 'supervisor'),
+('Magda', 'Support', 'magda@example.com', 'support');
+
+-- promocja
+DELETE FROM `promocja`;
+ALTER TABLE `promocja` AUTO_INCREMENT = 1;
+INSERT INTO `promocja` (`kod`, `procent_rabatu`, `ważne_od`, `ważne_do`, `minimalna_kwota_rezerwacji`, `limit_użyć`) VALUES
+('SUMMER25', 25, '2025-06-01', '2025-08-31', 500.00, 100),
+('WINTER10', 10, '2025-12-01', '2026-02-28', 300.00, 50),
+('VIP15', 15, '2025-05-01', '2025-12-31', 1000.00, 20),
+('SPRING20', 20, '2025-03-01', '2025-05-31', 400.00, 80),
+('FALL5', 5, '2025-09-01', '2025-11-30', 200.00, 60),
+('NEWUSER10', 10, '2025-01-01', '2025-12-31', 100.00, 150);
+
+-- 2. Wypełnianie tabel zależnych (z zależnościami od tabel nadrzędnych)
+
+-- miasto (FK: kraj_id)
+DELETE FROM `miasto`;
+ALTER TABLE `miasto` AUTO_INCREMENT = 1;
+INSERT INTO `miasto` (`nazwa`, `kraj_id`) VALUES
+('Kraków', 1),
+('Berlin', 2),
+('Paryż', 3),
+('Rzym', 4),
+('Barcelona', 5),
+('Warszawa', 1);
+
+-- atrakcja (FK: miasto_id, partner_id)
+DELETE FROM `atrakcja`;
+ALTER TABLE `atrakcja` AUTO_INCREMENT = 1;
+INSERT INTO `atrakcja` (`nazwa`, `opis`, `miasto_id`, `kategoria`, `przyjazne_dla_mobilności`, `cena`, `liczba_miejsc`, `wideo_url`, `średnia_ocena`, `polityka_anulowania`, `partner_id`) VALUES
+('Zwiedzanie Wawelu', 'Zwiedzanie zamku na Wawelu.', 1, 'historyczna', 1, 50.00, 20, NULL, 4.50, 'Bezpłatne anulowanie do 24h.', 1),
+('Rejs po Sekwanie', 'Romantyczny rejs po Sekwanie.', 3, 'rejs', 0, 30.00, 50, NULL, 4.80, 'Bezpłatne anulowanie do 48h.', 3),
+('Koloseum', 'Zwiedzanie Koloseum z przewodnikiem.', 4, 'historyczna', 1, 40.00, 30, NULL, 4.90, 'Bezpłatne anulowanie do 24h.', 4),
+('Sagrada Familia', 'Zwiedzanie Sagrada Familia.', 5, 'architektura', 1, 35.00, 40, NULL, 4.70, 'Bezpłatne anulowanie do 24h.', 5),
+('Mur Berliński', 'Zwiedzanie pozostałości Muru Berlińskiego.', 2, 'historyczna', 0, 25.00, 25, NULL, 4.60, 'Bezpłatne anulowanie do 48h.', 2),
+('Muzeum Powstania Warszawskiego',esophageal 'Zwiedzanie muzeum w Warszawie.', 6, 'historyczna', 1, 20.00, 30, NULL, 4.80, 'Bezpłatne anulowanie do 24h.', 6);
+
+-- zakwaterowanie (FK: miasto_id, partner_id)
+DELETE FROM `zakwaterowanie`;
+ALTER TABLE `zakwaterowanie` AUTO_INCREMENT = 1;
+INSERT INTO `zakwaterowanie` (`nazwa`, `opis`, `miasto_id`, `typ`, `przyjazne_dla_mobilności`, `cena_za_noc`, `liczba_miejsc`, `partner_id`) VALUES
+('Hotel Kraków', 'Luksusowy hotel w Krakowie.', 1, 'hotel', 1, 200.00, 50, 1),
+('Hostel Berlin', 'Przytulny hostel w Berlinie.', 2, 'hostel', 0, 50.00, 100, 2),
+('Apartament Paryż', 'Apartament z widokiem na Sekwanę.', 3, 'apartament', 1, 150.00, 4, 3),
+('B&B Rzym', 'Bed & Breakfast w centrum Rzymu.', 4, 'bed_and_breakfast', 1, 120.00, 10, 4),
+('Hotel Barcelona', 'Hotel blisko Sagrada Familia.', 5, 'hotel', 1, 180.00, 60, 5),
+('Apartament Warszawa', 'Nowoczesny apartament w Warszawie.', 6, 'apartament', 0, 100.00, 6, 6);
+
+-- dostępna_data_atrakcji (FK: atrakcja_id)
+DELETE FROM `dostępna_data_atrakcji`;
+ALTER TABLE `dostępna_data_atrakcji` AUTO_INCREMENT = 1;
+INSERT INTO `dostępna_data_atrakcji` (`atrakcja_id`, `data_dostępności`, `liczba_miejsc`) VALUES
+(1, '2025-05-01', 15),
+(2, '2025-05-02', 40),
+(3, '2025-05-03', 25),
+(4, '2025-05-04', 30),
+(5, '2025-05-05', 20),
+(6, '2025-05-06', 25);
+
+-- dostępna_data_zakwaterowania (FK: zakwaterowanie_id)
+DELETE FROM `dostępna_data_zakwaterowania`;
+ALTER TABLE `dostępna_data_zakwaterowania` AUTO_INCREMENT = 1;
+INSERT INTO `dostępna_data_zakwaterowania` (`zakwaterowanie_id`, `data_dostępności`, `liczba_miejsc`) VALUES
+(1, '2025-05-01', 40),
+(2, '2025-05-02', 80),
+(3, '2025-05-03', 4),
+(4, '2025-05-04', 8),
+(5, '2025-05-05', 50),
+(6, '2025-05-06', 6);
+
+-- atrakcja_wycieczki (FK: atrakcja_id, wycieczka_id)
+-- Wycieczki mogą nie być zdefiniowane w Twoim schemacie, więc pomijam tę tabelę.
+-- Jeśli masz tabelę `wycieczka`, daj znać, a dodam odpowiednie dane.
+
+-- 3. Wypełnianie tabel z dalszymi zależnościami
+
+-- rezerwacja (FK: klient_id, data_id)
+-- Uwaga: zakładam, że status i faktura_status mają wartości w języku angielskim, np. 'confirmed', 'pending', 'canceled'
+DELETE FROM `bilet`;
+DELETE FROM `skarga`;
+DELETE FROM `żądania_zwrotu`;
+DELETE FROM `płatnośc`;
+DELETE FROM `rezerwacja`;
+ALTER TABLE `rezerwacja` AUTO_INCREMENT = 1;
+INSERT INTO `rezerwacja` (`klient_id`, `typ_elementu`, `obiekt_id`, `data_id`, `data_rezerwacji`, `zameldowanie`, `wymeldowanie`, `uczestnicy`, `całkowita_cena`, `status`, `faktura_status`, `utworzono_w`) VALUES
+(1, 'atrakcja', 1, 1, '2025-04-24', '2025-05-01', '2025-05-01', 2, 100.00, 'confirmed', 'sent', '2025-04-24 10:00:00'),
+(2, 'zakwaterowanie', 1, 1, '2025-04-24', '2025-05-01', '2025-05-03', 3, 400.00, 'pending', 'not_requested', '2025-04-24 10:00:00'),
+(3, 'atrakcja', 2, 2, '2025-04-24', '2025-05-02', '2025-05-02', 4, 120.00, 'confirmed', 'pending', '2025-04-24 10:00:00'),
+(4, 'atrakcja', 3, 3, '2025-04-24', '2025-05-03', '2025-05-03', 2, 80.00, 'canceled', 'not_requested', '2025-04-24 10:00:00'),
+(5, 'zakwaterowanie', 5, 5, '2025-04-24', '2025-05-05', '2025-05-07', 2, 600.00, 'confirmed', 'sent', '2025-04-24 10:00:00'),
+(6, 'atrakcja', 6, 6, '2025-04-24', '2025-05-06', '2025-05-06', 1, 20.00, 'confirmed', 'not_requested', '2025-04-24 10:00:00');
+
+-- bilet (FK: rezerwacja_id)
+ALTER TABLE `bilet` AUTO_INCREMENT = 1;
+INSERT INTO `bilet` (`rezerwacja_id`, `kod_qr`, `plik_pdf_url`, `ważny_do`) VALUES
+(1, 'qr_code_1', 'http://travelo.pl/bilet1.pdf', '2025-05-01'),
+(3, 'qr_code_2', 'http://travelo.pl/bilet2.pdf', '2025-05-02'),
+(4, 'qr_code_3', NULL, '2025-05-03'),
+(5, 'qr_code_4', 'http://travelo.pl/bilet4.pdf', '2025-05-07'),
+(6, 'qr_code_5', 'http://travelo.pl/bilet5.pdf', '2025-05-06'),
+(1, 'qr_code_6', NULL, '2025-05-01');
+
+-- historia_punktów (FK: klient_id)
+DELETE FROM `historia_punktów`;
+ALTER TABLE `historia_punktów` AUTO_INCREMENT = 1;
+INSERT INTO `historia_punktów` (`klient_id`, `punkty_dodane`, `punkty_wykorzystane`, `opis`, `data_zdarzenia`) VALUES
+(1, 50, 0, 'Punkty za rezerwację', '2025-04-24 10:00:00'),
+(2, 20, 0, 'Punkty za rejestrację', '2025-04-24 10:00:00'),
+(3, 100, 50, 'Wykorzystanie punktów na rabat', '2025-04-24 10:00:00'),
+(4, 30, 0, 'Punkty za polecenie', '2025-04-24 10:00:00'),
+(5, 60, 0, 'Punkty za rezerwację', '2025-04-24 10:00:00'),
+(6, 10, 0, 'Punkty za rejestrację', '2025-04-24 10:00:00');
+
+-- oczekujący_klient (FK: klient_id, atrakcja_id, zakwaterowanie_id)
+DELETE FROM `oczekujący_klient`;
+ALTER TABLE `oczekujący_klient` AUTO_INCREMENT = 1;
+INSERT INTO `oczekujący_klient` (`klient_id`, `typ_uslugi`, `pożądana_data`, `uczestnicy`, `atrakcja_id`, `zakwaterowanie_id`) VALUES
+(1, 'atrakcja', '2025-05-10', 2, 1, NULL),
+(2, 'zakwaterowanie', '2025-05-15', 3, NULL, 2),
+(3, 'atrakcja', '2025-05-12', 4, 2, NULL),
+(4, 'zakwaterowanie', '2025-05-20', 2, NULL, 4),
+(5, 'atrakcja', '2025-05-18', 1, 4, NULL),
+(6, 'zakwaterowanie', '2025-05-22', 2, NULL, 6);
+
+-- rekomendacja (FK: klient_id, atrakcja_id, zakwaterowanie_id)
+DELETE FROM `rekomendacja`;
+ALTER TABLE `rekomendacja` AUTO_INCREMENT = 1;
+INSERT INTO `rekomendacja` (`klient_id`, `typ_uslugi`, `waga_rekomendacji`, `typ_rekomendacji`, `opis`, `atrakcja_id`, `zakwaterowanie_id`) VALUES
+(1, 'atrakcja', 0.95, 'algorytmiczna', 'Polecamy zwiedzanie Wawelu!', 1, NULL),
+(2, 'zakwaterowanie', 0.90, 'promocyjna', 'Polecamy hotel w Berlinie!', NULL, 2),
+(3, 'atrakcja', 0.85, 'użytkownika', 'Rejs po Sekwanie - świetny wybór!', 2, NULL),
+(4, 'zakwaterowanie', 0.80, 'algorytmiczna', 'B&B w Rzymie dla Ciebie!', NULL, 4),
+(5, 'atrakcja', 0.90, 'promocyjna', 'Sagrada Familia - nie przegap!', 4, NULL),
+(6, 'zakwaterowanie', 0.85, 'użytkownika', 'Apartament w Warszawie!', NULL, 6);
+
+-- recenzja (FK: klient_id)
+DELETE FROM `odpowiedź_na_recenzję`;
+DELETE FROM `obraz_recenzji`;
+DELETE FROM `śledzenie_recenzji`;
+DELETE FROM `recenzja`;
+ALTER TABLE `recenzja` AUTO_INCREMENT = 1;
+INSERT INTO `recenzja` (`klient_id`, `typ_elementu`, `obiekt_id`, `ocena`, `komentarz`, `utworzono_w`) VALUES
+(1, 'atrakcja', 1, 5, 'Wspaniałe zwiedzanie Wawelu!', '2025-04-24 10:00:00'),
+(2, 'zakwaterowanie', 2, 4, 'Hostel w Berlinie bardzo wygodny.', '2025-04-24 10:00:00'),
+(3, 'atrakcja', 2, 5, 'Rejs po Sekwanie - niesamowity!', '2025-04-24 10:00:00'),
+(4, 'zakwaterowanie', 4, 3, 'B&B w Rzymie OK, ale obsługa średnia.', '2025-04-24 10:00:00'),
+(5, 'atrakcja', 4, 5, 'Sagrada Familia - przepiękna!', '2025-04-24 10:00:00'),
+(6, 'zakwaterowanie', 6, 4, 'Apartament w Warszawie bardzo ładny.', '2025-04-24 10:00:00');
+
+-- odpowiedź_na_recenzję (FK: recenzja_id, partner_id)
+ALTER TABLE `odpowiedź_na_recenzję` AUTO_INCREMENT = 1;
+INSERT INTO `odpowiedź_na_recenzję` (`recenzja_id`, `partner_id`, `tekst_odpowiedzi`, `utworzono_w`) VALUES
+(1, 1, 'Dziękujemy za opinię!', '2025-04-24 10:05:00'),
+(2, 2, 'Cieszymy się, że hostel się podobał!', '2025-04-24 10:05:00'),
+(3, 3, 'Dziękujemy za pozytywną opinię!', '2025-04-24 10:05:00'),
+(4, 4, 'Przepraszamy za niedociągnięcia, poprawimy obsługę.', '2025-04-24 10:05:00'),
+(5, 5, 'Cieszymy się, że Sagrada Familia przypadła do gustu!', '2025-04-24 10:05:00'),
+(6, 6, 'Dziękujemy za opinię o apartamencie!', '2025-04-24 10:05:00');
+
+-- obraz_recenzji (FK: recenzja_id)
+ALTER TABLE `obraz_recenzji` AUTO_INCREMENT = 1;
+INSERT INTO `obraz_recenzji` (`recenzja_id`, `url_obrazu`) VALUES
+(1, 'http://travelo.pl/recenzja1_obraz1.jpg'),
+(2, 'http://travelo.pl/recenzja2_obraz1.jpg'),
+(3, 'http://travelo.pl/recenzja3_obraz1.jpg'),
+(4, 'http://travelo.pl/recenzja4_obraz1.jpg'),
+(5, 'http://travelo.pl/recenzja5_obraz1.jpg'),
+(6, 'http://travelo.pl/recenzja6_obraz1.jpg');
+
+-- powiadomienie (FK: klient_id)
+-- Zakładam, że `powiadomieniecol` to np. typ powiadomienia, i ma wartości typu 'info', 'promo', 'alert'
+DELETE FROM `powiadomienie`;
+ALTER TABLE `powiadomienie` AUTO_INCREMENT = 1;
+INSERT INTO `powiadomienie` (`klient_id`, `typ`, `treść`, `czy_przeczytane`, `utworzono_w`, `powiadomieniecol`) VALUES
+(1, 'rezerwacja', 'Twoja rezerwacja została potwierdzona.', 0, '2025-04-24 10:00:00', 'info'),
+(2, 'promocja', 'Nowa promocja dla Ciebie!', 0, '2025-04-24 10:00:00', 'promo'),
+(3, 'rezerwacja', 'Twoja rezerwacja została potwierdzona.', 1, '2025-04-24 10:00:00', 'info'),
+(4, 'anulowanie', 'Twoja rezerwacja została anulowana.', 0, '2025-04-24 10:00:00', 'alert'),
+(5, 'rezerwacja', 'Twoja rezerwacja została potwierdzona.', 0, '2025-04-24 10:00:00', 'info'),
+(6, 'promocja', 'Skorzystaj z nowej promocji!', 0, '2025-04-24 10:00:00', 'promo');
+
+-- promocja_użytkownik (FK: promocja_id, klient_id)
+DELETE FROM `promocja_użytkownik`;
+ALTER TABLE `promocja_użytkownik` AUTO_INCREMENT = 1;
+INSERT INTO `promocja_użytkownik` (`promocja_id`, `klient_id`, `liczba_użyć`) VALUES
+(1, 1, 1),
+(2, 2, 0),
+(3, 3, 2),
+(4, 4, 1),
+(5, 5, 0),
+(1, 6, 1);
+
+-- płatnośc (FK: rezerwacja_id)
+ALTER TABLE `płatnośc` AUTO_INCREMENT = 1;
+INSERT INTO `płatnośc` (`rezerwacja_id`, `dostawca_płatności`, `status_płatności`, `data_transakcji`) VALUES
+(1, 'Stripe', 'completed', '2025-04-24 10:00:00'),
+(2, 'PayPal', 'pending', '2025-04-24 10:00:00'),
+(3, 'Stripe', 'completed', '2025-04-24 10:00:00'),
+(4, 'PayPal', 'failed', '2025-04-24 10:00:00'),
+(5, 'Stripe', 'completed', '2025-04-24 10:00:00'),
+(6, 'Stripe', 'completed', '2025-04-24 10:00:00');
+
+-- raport_finansowy (FK: partner_id)
+DELETE FROM `raport_finansowy`;
+ALTER TABLE `raport_finansowy` AUTO_INCREMENT = 1;
+INSERT INTO `raport_finansowy` (`partner_id`, `data_raportu`, `całkowity_przychód`, `całkowita_wypłata`, `oczekujące_saldo`, `pobrano`) VALUES
+(1, '2025-04-24', 5000.00, 4000.00, 1000.00, 1),
+(2, '2025-04-24', 3000.00, 2000.00, 1000.00, 0),
+(3, '2025-04-24', 7000.00, 6000.00, 1000.00, 1),
+(4, '2025-04-24', 2000.00, 1500.00, 500.00, 0),
+(5, '2025-04-24', 8000.00, 7000.00, 1000.00, 1),
+(6, '2025-04-24', 4000.00, 3000.00, 1000.00, 0);
+
+-- reguła_ceny (FK: partner_id, atrakcja_id, zakwaterowanie_id)
+DELETE FROM `reguła_ceny`;
+ALTER TABLE `reguła_ceny` AUTO_INCREMENT = 1;
+INSERT INTO `reguła_ceny` (`partner_id`, `typ_uslugi`, `typ_reguły`, `opis`, `modyfikator_ceny`, `ważne_od`, `ważne_do`, `atrakcja_atrakcja_id`, `zakwaterowanie_zakwaterowanie_id`) VALUES
+(1, 'atrakcja', 'sezonowa', 'Podwyżka cen w sezonie', 20.00, '2025-06-01', '2025-08-31', 1, NULL),
+(2, 'zakwaterowanie', 'rabat', 'Rabat na hostel', -10.00, '2025-04-01', '2025-04-30', NULL, 2),
+(3, 'atrakcja', 'dynamiczna', 'Dynamiczna zmiana ceny', 15.00, '2025-05-01', '2025-05-31', 2, NULL),
+(4, 'zakwaterowanie', 'sezonowa', 'Podwyżka w sezonie', 25.00, '2025-06-01', '2025-08-31', NULL, 4),
+(5, 'atrakcja', 'rabat', 'Rabat na atrakcję', -5.00, '2025-04-01', '2025-04-30', 4, NULL),
+(6, 'zakwaterowanie', 'dynamiczna', 'Dynamiczna zmiana ceny', 10.00, '2025-05-01', '2025-05-31', NULL, 6);
+
+-- skarga (FK: klient_id, rezerwacja_id)
+-- Zakładam, że status to np. 'open', 'under_review', 'resolved', 'rejected'
+ALTER TABLE `skarga` AUTO_INCREMENT = 1;
+INSERT INTO `skarga` (`klient_id`, `rezerwacja_id`, `opis`, `status`, `utworzono_w`) VALUES
+(1, 1, 'Atrakcja nie spełniała oczekiwań.', 'open', '2025-04-24 10:00:00'),
+(2, 2, 'Problem z zameldowaniem.', 'under_review', '2025-04-24 10:00:00'),
+(3, 3, 'Rejs opóźniony.', 'resolved', '2025-04-24 10:00:00'),
+(4, 4, 'Nieprawidłowe anulowanie.', 'rejected', '2025-04-24 10:00:00'),
+(5, 5, 'Hotel nieczysty.', 'open', '2025-04-24 10:00:00'),
+(6, 6, 'Muzeum zamknięte.', 'under_review', '2025-04-24 10:00:00');
+
+-- skarga_na_partnera (FK: klient_id, partner_id)
+-- Zakładam, że status to np. 'new', 'under_review', 'resolved', 'closed'
+DELETE FROM `skarga_na_partnera`;
+ALTER TABLE `skarga_na_partnera` AUTO_INCREMENT = 1;
+INSERT INTO `skarga_na_partnera` (`klient_id`, `partner_id`, `opis`, `status`, `utworzono_w`) VALUES
+(1, 1, 'Partner nie odpowiada na pytania.', 'new', '2025-04-24 10:00:00'),
+(2, 2, 'Hostel nieprzygotowany.', 'under_review', '2025-04-24 10:00:00'),
+(3, 3, 'Rejs źle zorganizowany.', 'resolved', '2025-04-24 10:00:00'),
+(4, 4, 'B&B nieczyste.', 'closed', '2025-04-24 10:00:00'),
+(5, 5, 'Hotel nie przestrzega zasad.', 'new', '2025-04-24 10:00:00'),
+(6, 6, 'Partner nie dotrzymał terminu.', 'under_review', '2025-04-24 10:00:00');
+
+-- specjalne_żądanie (FK: klient_id)
+-- Zakładam, że status to np. 'pending', 'contacted', 'resolved'
+DELETE FROM `specjalne_żądanie`;
+ALTER TABLE `specjalne_żądanie` AUTO_INCREMENT = 1;
+INSERT INTO `specjalne_żądanie` (`klient_id`, `opis`, `typ`, `status`, `utworzono_w`) VALUES
+(1, 'Rezerwacja dla grupy 10 osób.', 'rezerwacja_grupowa', 'pending', '2025-04-24 10:00:00'),
+(2, 'Specjalne udogodnienia VIP.', 'żądanie_vip', 'contacted', '2025-04-24 10:00:00'),
+(3, 'Niestandardowa wycieczka po Paryżu.', 'wycieczka_niestandardowa', 'resolved', '2025-04-24 10:00:00'),
+(4, 'Rezerwacja dla grupy 15 osób.', 'rezerwacja_grupowa', 'pending', '2025-04-24 10:00:00'),
+(5, 'Specjalne udogodnienia w hotelu.', 'żądanie_vip', 'contacted', '2025-04-24 10:00:00'),
+(6, 'Niestandardowa wycieczka po Warszawie.', 'wycieczka_niestandardowa', 'pending', '2025-04-24 10:00:00');
+
+-- ulubione (FK: klient_id, atrakcja_id, zakwaterowanie_id)
+DELETE FROM `ulubione`;
+ALTER TABLE `ulubione` AUTO_INCREMENT = 1;
+INSERT INTO `ulubione` (`klient_id`, `typ_uslugi`, `atrakcja_id`, `zakwaterowanie_id`) VALUES
+(1, 'atrakcja', 1, NULL),
+(2, 'zakwaterowanie', NULL, 2),
+(3, 'atrakcja', 2, NULL),
+(4, 'zakwaterowanie', NULL, 4),
+(5, 'atrakcja', 4, NULL),
+(6, 'zakwaterowanie', NULL, 6);
+
+-- zgłoszenie_wsparcia (FK: klient_id, administrator_id)
+-- Zakładam, że status to np. 'open', 'in_progress', 'resolved', 'closed'
+-- Zakładam, że priorytet to np. 'low', 'medium', 'high', 'critical'
+DELETE FROM `wiadomość_zgłoszenia`;
+DELETE FROM `zgłoszenie_wsparcia`;
+ALTER TABLE `zgłoszenie_wsparcia` AUTO_INCREMENT = 1;
+INSERT INTO `zgłoszenie_wsparcia` (`klient_id`, `temat`, `opis`, `status`, `priorytet`, `utworzono_w`, `rozwiązano_w`, `administrator_id`) VALUES
+(1, 'Problem z płatnością', 'Płatność nie прошла.', 'open', 'high', '2025-04-24 10:00:00', NULL, 1),
+(2, 'Anulowanie rezerwacji', 'Nie mogę anulować rezerwacji.', 'in_progress', 'medium', '2025-04-24 10:00:00', NULL, 3),
+(3, 'Pytanie o promocję', 'Jak skorzystać z promocji?', 'resolved', 'low', '2025-04-24 10:00:00', '2025-04-24 10:30:00', 5),
+(4, 'Problem z kontem', 'Nie mogę się zalogować.', 'closed', 'critical', '2025-04-24 10:00:00', '2025-04-24 10:20:00', 1),
+(5, 'Pytanie o hotel', 'Czy hotel ma basen?', 'open', 'low', '2025-04-24 10:00:00', NULL, 3),
+(6, 'Problem z biletem', 'Bilet nie działa.', 'in_progress', 'high', '2025-04-24 10:00:00', NULL, 5);
+
+-- wiadomość_zgłoszenia (FK: zgłoszenie_id)
+ALTER TABLE `wiadomość_zgłoszenia` AUTO_INCREMENT = 1;
+INSERT INTO `wiadomość_zgłoszenia` (`zgłoszenie_id`, `typ_nadawcy`, `nadawca_id`, `wiadomość`, `wysłano_w`) VALUES
+(1, 'użytkownik', 1, 'Proszę o szybką pomoc z płatnością.', '2025-04-24 10:00:00'),
+(2, 'agent', 3, 'Sprawdzamy Twoją rezerwację.', '2025-04-24 10:05:00'),
+(3, 'użytkownik', 3, 'Dziękuję za pomoc!', '2025-04-24 10:30:00'),
+(4, 'agent', 1, 'Problem rozwiązany, proszę spróbować ponownie.', '2025-04-24 10:20:00'),
+(5, 'użytkownik', 5, 'Czy możecie potwierdzić?', '2025-04-24 10:00:00'),
+(6, 'agent', 5, 'Sprawdzamy Twój bilet.', '2025-04-24 10:05:00');
+
+-- zdjęcie_atrakcji (FK: atrakcja_id)
+DELETE FROM `zdjęcie_atrakcji`;
+ALTER TABLE `zdjęcie_atrakcji` AUTO_INCREMENT = 1;
+INSERT INTO `zdjęcie_atrakcji` (`atrakcja_id`, `url_zdjęcia`) VALUES
+(1, 'http://travelo.pl/zdjecie_wawel.jpg'),
+(2, 'http://travelo.pl/zdjecie_sekwana.jpg'),
+(3, 'http://travelo.pl/zdjecie_koloseum.jpg'),
+(4, 'http://travelo.pl/zdjecie_sagrada.jpg'),
+(5, 'http://travelo.pl/zdjecie_mur_berlinski.jpg'),
+(6, 'http://travelo.pl/zdjecie_muzeum_warszawa.jpg');
+
+-- śledzenie_recenzji (FK: recenzja_id, administrator_id)
+ALTER TABLE `śledzenie_recenzji` AUTO_INCREMENT = 1;
+INSERT INTO `śledzenie_recenzji` (`recenzja_id`, `notatka_rozwiązania`, `rozwiązane`, `utworzono_w`, `administrator_id`) VALUES
+(1, 'Brak problemów.', 1, '2025-04-24 10:00:00', 1),
+(2, 'Skontaktowano się z partnerem.', 0, '2025-04-24 10:00:00', 3),
+(3, 'Brak problemów.', 1, '2025-04-24 10:00:00', 5),
+(4, 'Rozwiązano problem z obsługą.', 1, '2025-04-24 10:00:00', 1),
+(5, 'Brak problemów.', 1, '2025-04-24 10:00:00', 3),
+(6, 'W trakcie weryfikacji.', 0, '2025-04-24 10:00:00', 5);
+
+-- żądania_zwrotu (FK: klient_id, rezerwacja_id)
+-- Zakładam, że status to np. 'pending', 'approved', 'rejected'
+ALTER TABLE `żądania_zwrotu` AUTO_INCREMENT = 1;
+INSERT INTO `żądania_zwrotu` (`klient_id`, `rezerwacja_id`, `powód`, `status`, `utworzono_w`) VALUES
+(1, 1, 'Zmiana planów.', 'pending', '2025-04-24 10:00:00'),
+(2, 2, 'Problem z hotelem.', 'approved', '2025-04-24 10:00:00'),
+(3, 3, 'Rejs odwołany.', 'rejected', '2025-04-24 10:00:00'),
+(4, 4, 'Błąd w rezerwacji.', 'pending', '2025-04-24 10:00:00'),
+(5, 5, 'Hotel nie spełnia oczekiwań.', 'approved', '2025-04-24 10:00:00'),
+(6, 6, 'Muzeum zamknięte.', 'pending', '2025-04-24 10:00:00');
+
+-- Włączenie bezpiecznego trybu z powrotem
+SET SQL_SAFE_UPDATES = 1;
