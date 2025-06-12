@@ -1,0 +1,213 @@
+//klienci
+{
+  "_id": ObjectId("684b1c36d5822fb264d43511"),
+  "email": "jan.kowalski@example.com",
+  "telefon": "+48 123 456 789",
+  "haslo_hash": "hashed_password",
+  "imie": "Jan",
+  "nazwisko": "Kowalski",
+  "data_urodzenia": ISODate("1990-05-15T00:00:00Z"),
+  "zdjecie_profilowe": "http://example.com/zdjecie.jpg",
+  "jezyk": "pl",
+  "waluta": "PLN",
+  "motyw": "jasny",
+  "jest_zablokowany": false,
+  "jest_vip": false,
+  "dwuskladnikowe_uwierzytelnianie": false,
+  "utworzono_w": ISODate("2025-06-01T12:00:00Z"),
+  "program_lojalnosciowy": {
+    "punkty": 150,
+    "poziom": "brazowy",
+    "kod_polecajacy": "JAN123"
+  },
+  "ulubione": [
+    { "typ_uslugi": "atrakcja", "usluga_id": ObjectId("60a7c8e4f1b2c12345678902") }
+  ],
+  "historia_punktow": [
+    {
+      "punkty_dodane": 50,
+      "punkty_wykorzystane": 0,
+      "opis": "Punkty za rezerwację atrakcji",
+      "data_zdarzenia": ISODate("2025-06-10T10:00:00Z")
+    }
+  ]
+}
+//atrakcje
+{
+  "_id": ObjectId("60a7c8e4f1b2c12345678902"),
+  "nazwa": "Wycieczka na Morskie Oko",
+  "opis": "Piesza wycieczka w Tatrach z przewodnikiem",
+  "miasto": {
+    "miasto_id": 1,
+    "nazwa": "Zakopane",
+    "kraj": { "kraj_id": 1, "nazwa": "Polska" },
+    "gps": { "type": "Point", "coordinates": [20.0801, 49.2015] }
+  },
+  "kategoria": "Natura",
+  "przyjazne_dla_mobilnosci": false,
+  "cena": 150,
+  "liczba_miejsc": 20,
+  "wideo_url": "http://example.com/morskie_oko.mp4",
+  "srednia_ocena": 4.5,
+  "polityka_anulowania": "Zwrot do 48h przed rozpoczęciem",
+  "partner_id": ObjectId("60a7c8e4f1b2c12345678903"),
+  "dostepne_daty": [
+    {
+      "data_id": 1,
+      "data_dostepnosci": ISODate("2025-07-01"),
+      "liczba_miejsc": 20
+    }
+  ],
+  "zdjecia": ["http://example.com/zdjecie1.jpg"],
+  "opinie": []
+}
+
+//zakwaterowanie
+
+{
+  "_id": ObjectId("60a7c8e9f1b2c12345678904"),
+  "nazwa": "Hotel Górski",
+  "opis": "Nowoczesny hotel w centrum Krakowa",
+  "typ": "hotel",
+  "gwiazdy": 4,
+  "miasto": {
+    "miasto_id": 2,
+    "nazwa": "Krakow",
+    "kraj": { "id": 1, "nazwa": "Polska" },
+    "gps": { "type": "Point", "coordinates": [19, 51] }
+  },
+  "cena_za_noc": 250,
+  "udogodnienia": ["Wi-Fi", "Basen", "Śniadanie"],
+  "polityka_anulowania": "Zwrot do 7 dni przed zameldowaniem",
+  "partner_id": ObjectId("60a7c8e4f1b2c12345678903"),
+  "opinie": []
+}
+
+//rezerwacje
+
+{
+  "_id": ObjectId("60a7c9e4f1b2c12345678906"),
+  "klient_id": ObjectId("60a7c8e4f1b2c12345678901"),
+  "typ": "atrakcja",
+  "obiekt_id": {
+    "typ": "atrakcja",
+    "id": ObjectId("60a7c8e4f1b2c12345678902")
+  },
+  "data_rezerwacji": ISODate("2025-06-30"),
+  "zameldowanie": ISODate("2025-07-01"),
+  "wymeldowanie": ISODate("2025-07-01"),
+  "uczestnicy": 1,
+  "calkowita_cena": 150.00,
+  "status": "potwierdzone",
+  "faktura_status": "nie_zadana",
+  "utworzono_w": ISODate("2025-06-30T12:00:00Z"),
+  "bilet": {
+    "kod_qr": "https://example.com/qr123",
+    "plik_pdf_url": "https://example.com/bilet123.pdf",
+    "wazny_do": ISODate("2025-07-01")
+  },
+  "platnosc": {
+    "dostawca": "Stripe",
+    "status": "udane",
+    "data_transakcji": ISODate("2025-06-30T12:00:00Z")
+  },
+  "zadanie_zwrotu": null
+}
+
+//partnerzy
+
+{
+  "_id": ObjectId("60a7c8e4f1b2c12345678903"),
+  "nazwa": "Tatry Tours",
+  "opis": "Organizacja wycieczek w Tatrach",
+  "adres": "ul. Górska 10, Zakopane",
+  "email_kontaktowy": "kontakt@tatr.tours",
+  "telefon_kontaktowy": "+48 876 543 321",
+  "strona_internetowa": "https://tatr.tours",
+  "zweryfikowany": true,
+  "utworzono_w": ISODate("2025-05-01T12:00:00Z"),
+  "preferencje_wyplaty": [
+    {
+      "minimalna_wyplata": 100,
+      "czestotliwosc": "miesieczna",
+      "stripe_konto_id": "acct_123456789"
+    }
+  ],
+  "uzytkownicy": [
+    {
+      "email": "anna.kowal@tatr.tours",
+      "haslo_hash": "hashed_password",
+      "imie": "Anna",
+      "rola": "wlasciciel",
+      "jest_aktywny": true,
+      "utworzono_w": ISODate("2015-05-25T12:00:00Z")
+    }
+  ]
+}
+
+//powiadomienia
+{
+  "_id": ObjectId("60a7c9e4f1b2c12345678906"),
+  "klient_id": ObjectId("60a7c8e4f1b2c12345678901"),
+  "typ": "rezerwacja",
+  "tresc": "Twoja rezerwacja na Wycieczkę na Morskie Oko została potwierdzona",
+  "czy_przeczytane": true,
+  "utworzono_w": ISODate("2025-06-30T12:00:00Z")
+}
+
+//wycieczki
+
+{
+  "_id": ObjectId("60a7c9e4f1b2c12345678907"),
+  "tytul": "Weekend w Tatrach",
+  "opis": "Dwudniowa wycieczka po Tatrach z przewodnikiem",
+  "atrakcje": [
+    {
+      "atrakcja_id": ObjectId("60a7c8e4f1b2c12345678902"),
+      "nazwa": "Wycieczka na Morskie Oko"
+    }
+  ]
+}
+
+//promocje
+{
+  "_id": ObjectId("60a7c9f4f1b2c12345678908"),
+  "kod": "SUMMER25",
+  "opis": "10% rabatu na letnie atrakcje",
+  "procent_rabatu": 10,
+  "wazne_od": ISODate("2025-06-01"),
+  "wazne_do": ISODate("2025-08-31"),
+  "minimalna_kwotowa_rezerwacja": 200.00,
+  "limit_uzyc": 100,
+  "uzytkownicy": [
+    {
+      "klient_id": ObjectId("60a7c8e4f1b2c12345678901"),
+      "liczba_uzyc": 1
+    }
+  ]
+}
+
+//zgloszenia_wsparcia
+{
+  "_id": ObjectId("60a7c9f4f1b2c12345678909"),
+  "klient_id": ObjectId("60a7c8e4f1b2c12345678901"),
+  "temat": "Problem z rezerwacją",
+  "opis": "Nie otrzymałem potwierdzenia rezerwacji",
+  "status": "otwarte",
+  "priorytet": "wysoki",
+  "typ": "rezerwacja",
+  "rezerwacja_id": ObjectId("60a7c9e4f1b2c12345678905"),
+  "partner_id": null,
+  "utworzono_w": ISODate("2025-07-01T10:00:00Z"),
+  "rozwiazano_w": null,
+  "administrator_id": 1,
+  "wiadomosci": [
+    {
+      "typ_nadawcy": "uzytkownik",
+      "nadawca_id": ObjectId("60a7c8e4f1b2c12345678901"),
+      "wiadomosc": "Proszę sprawdzić status mojej rezerwacji",
+      "wyslano_w": ISODate("2025-07-01T10:00:00Z")
+    }
+  ]
+}
+
