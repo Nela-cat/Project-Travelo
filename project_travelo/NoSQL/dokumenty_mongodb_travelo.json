@@ -210,4 +210,53 @@
     }
   ]
 }
-
+//admin
+{
+  "email": "admin@travelo.pl",
+  "haslo_hash": "hashed_password_admin",
+  "imie": "Adam",
+  "nazwisko": "Nowak",
+  "rola": "superadmin",
+  "aktywne": true,
+  "ostatnie_logowanie": {
+    "$date": "2025-06-01T10:00:00.000Z"
+  },
+  "logi_akcji": [
+    {
+      "typ_akcji": "zatwierdzenie_partner",
+      "opis": "Zatwierdzono partnera Tatry Tours",
+      "data": {
+        "$date": "2025-05-20T09:00:00.000Z"
+      }
+    }
+  ]
+}
+//pracownicy_wsparcia
+/** 
+* Paste one or more documents here
+*/
+{
+  "email": "support@travelo.pl",
+  "haslo_hash": "hashed_password_support",
+  "imie": "Ewa",
+  "nazwisko": "Kowalska",
+  "dzial": "platnosci",
+  "aktywny": true,
+  "uprawnienia": [
+    "odczyt_zgloszen",
+    "edycja_statusu",
+    "kontakt_z_partnerem"
+  ],
+  "ostatnia_aktywność": {
+    "$date": "2025-06-01T11:00:00.000Z"
+  },
+  "historia_dzialan": [
+    {
+      "dzialanie": "eskalacja_zgloszenia",
+      "opis": "Eskalowano zgłoszenie dot. rezerwacji nr 123",
+      "data": {
+        "$date": "2025-06-01T10:30:00.000Z"
+      }
+    }
+  ]
+}
